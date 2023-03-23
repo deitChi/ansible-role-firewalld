@@ -2,7 +2,7 @@
 - name: FIREWALLD - Generate Rule Lists
   set_fact:
     remove_zones: "{{ ansible_facts.ansible_local.firewalld.keys() | difference(zone_list + default_zones) }}"
-    add_zones: "{{ zone_list }}}"
+    add_zones: "{{ zone_list }}"
   register: fact_data2
 
 # - debug:

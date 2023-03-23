@@ -3,6 +3,7 @@ remove_ufw: True
 log_denied: True
 disable_timestamp_request_reply: True
 default_interface_zone: public
+inventory_var: fwd_zone
 
 skip_prompts: False
 debug_output: False

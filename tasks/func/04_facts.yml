@@ -10,7 +10,7 @@
     add_services: "{{ common.services if item.services.use_common else [] + item.services.rules }}"
     add_rich_rules: "{{ common.rich_rules if item.rich_rules.use_common else [] + item.rich_rules.rules }}"
   register: fact_data
-  when: "{{ item.name in lookup('ansible.builtin.vars', inventory_var) }}"
+  when: item.name in lookup('ansible.builtin.vars', inventory_var)
   with_items: "{{ zone_conf }}"
 
 # - debug:

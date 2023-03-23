@@ -1,0 +1,39 @@
+---
+- include: func/00_remove-ufw.yml
+  when:
+    - ansible_os_family == 'Debian'
+    - remove_ufw == True
+  tags: firewalld
+
+- include: func/01_install.yml
+  when:
+    - ansible_os_family == 'Debian'
+  tags: firewalld
+
+- include: func/02_configure.yml
+  tags: firewalld
+
+- include: func/03_zones.yml
+  vars:
+    zone_list: "{{ zone_conf | map(attribute='zone') | list }}"
+  tags: firewalld
+
+- include: func/04_facts.yml
+  tags: firewalld
+
+- include: func/05_execute.yml
+  vars:
+    topic: '{{ execute.topic }}'
+    function: '{{ execute.function }}'
+  with_items:
+    - {topic: sources, function: remove}
+    - {topic: sources, function: add}
+    - {topic: ports, function: remove}
+    - {topic: ports, function: add}
+    - {topic: services, function: remove}
+    - {topic: services, function: add}
+    - {topic: rich_rules, function: remove}
+    - {topic: rich_rules, function: add}
+  loop_control:
+    loop_var: execute
+  tags: firewalld

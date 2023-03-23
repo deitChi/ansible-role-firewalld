@@ -1,0 +1,38 @@
+---
+remove_ufw: True
+log_denied: True
+disable_timestamp_request_reply: True
+default_interface_zone: public
+
+skip_prompts: False
+debug_output: False
+
+common:
+  rich_rules:
+    - 'rule protocol value="icmp" accept'
+    - 'rule family="ipv4" service name="ssh" accept limit value="1/s"'
+  services: []
+  ports: []
+zone_conf:
+  - name: public-ssh
+    zone: public
+    target: DROP
+    ports:
+      use_common: no
+      rules: []
+    services:
+      use_common: no
+      rules: []
+    rich_rules:
+      use_common: yes
+      rules: []
+default_zones:
+  - block
+  - dmz
+  - drop
+  - external
+  - home
+  - internal
+  - public
+  - trusted
+  - work

@@ -1,0 +1,17 @@
+---
+- name: FIREWALLD - {{ topic | capitalize }} - {{ function | capitalize }}
+  firewalld:
+    state: "{{ 'enabled' if function == 'add' else 'disabled' }}"
+    permanent: yes
+    zone: '{{ item.0.item.zone }}'
+    source: "{{ item.1 if topic == 'sources' else omit }}"
+    port: "{{ item.1 if topic == 'ports' else omit }}"
+    service: "{{ item.1 if topic == 'services' else omit }}"
+    rich_rule: "{{ item.1 if topic == 'rich_rules' else omit }}"
+  with_subelements:
+    - "{{ fact_data.results }}"
+    - "ansible_facts.{{ function }}_{{ topic }}"
+  loop_control:
+    label: "> <Zone Template={{ item.0.item.name }}> <Zone={{ item.0.item.zone }}> <{{ topic | capitalize }}={{ item.1 }}>"
+  notify:
+    - Reload FirewallD

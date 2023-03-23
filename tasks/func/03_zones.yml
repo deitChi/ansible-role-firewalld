@@ -1,0 +1,47 @@
+---
+- name: FIREWALLD - Generate Rule Lists
+  set_fact:
+    remove_zones: "{{ ansible_facts.ansible_local.firewalld.keys() | difference(zone_list + default_zones) }}"
+    add_zones: "{{ zone_list }}}"
+  register: fact_data2
+
+# - debug:
+#     msg: "{{ remove_zones }}"
+
+- name: FIREWALLD - Zone AUS
+  ansible.builtin.pause:
+    prompt: "The following Zones are going to be Removed:\n{{ remove_zones }}"
+  when: skip_prompts == False
+
+- name: FIREWALLD - Zone - Delete
+  firewalld:
+    zone: "{{ item }}"
+    state: absent
+    permanent: true
+  notify:
+    - Reload FirewallD
+  with_items: "{{ remove_zones }}"
+  register: firewalld_zone_delete
+
+- name: FIREWALLD - Service - Restart
+  systemd:
+    name: firewalld
+    state: restarted
+  when: firewalld_zone_delete.changed
+
+- name: FIREWALLD - Zone AUS
+  ansible.builtin.pause:
+    prompt: "The following Zones are going to be Created:\n{{ add_zones }}"
+  when: skip_prompts == False
+
+- name: FIREWALLD - Zone - Create
+  firewalld:
+    zone: "{{ item }}"
+    state: present
+    permanent: true
+  notify:
+    - Reload FirewallD
+  with_items: "{{ add_zones }}"
+
+- name: "FIREWALLD - Re-run setup to use custom facts"
+  setup: ~

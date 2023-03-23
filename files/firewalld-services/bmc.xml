@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+ <short>BMCPatrol</short>
+ <description>BMC Patrol is used by Naemon for internal monitoring</description>
+ <port protocol="tcp" port="3181-3195"/>
+</service>

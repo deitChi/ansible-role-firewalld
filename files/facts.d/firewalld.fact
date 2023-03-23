@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+
+import xml.etree.ElementTree as ET
+import os
+import json
+
+firewalld_zone_cfg_dir = '/etc/firewalld/zones/'
+
+fwd_list = []
+#active_zone_list = []
+
+# Get Filelist
+def get_zone(xml_path):
+    active_zone_list = []
+    for zone_file in os.listdir(xml_path):
+        if zone_file.endswith(".xml"):
+            path = os.path.join(xml_path, zone_file)
+            active_zone_list.append(path)
+            #print(os.path.join(xml_path, zone_file))
+        else:
+            continue
+    return active_zone_list
+
+def xml_to_string(chunk):
+    tag = chunk.tag
+    string_list = [tag]
+    for k, v in chunk.attrib.items():
+        string_list.append(f"{k}=\"{v}\"")
+    return " ".join(string_list)
+
+def get_rich_rules(xml):
+    rule_list = []
+    for rich_rule in xml.findall('rule'):
+        string_list = []
+        string_list.append(xml_to_string(rich_rule))
+        for service in rich_rule:
+            string_list.append(xml_to_string(service))
+            for subelem in service:
+                string_list.append(xml_to_string(subelem))
+        rule_list.append(" ".join(string_list))
+    return rule_list
+
+def get_data():
+    firewalld = {}
+    for zone_path in get_zone(firewalld_zone_cfg_dir):
+        tree = ET.parse(zone_path)
+        root = tree.getroot()
+        fwd_config = {}
+        # Get Zone Name
+        try:
+            fwd_config['zone_name'] = root.find('short').text
+        except(AttributeError):
+            fwd_config['zone_name'] = os.path.splitext(os.path.split(zone_path)[1])[0]
+        # Get Zone Description
+        try:
+            fwd_config['zone_desc'] = root.find('description').text
+        except(AttributeError):
+            pass
+        # Get Zone Target, set 'default' if not found
+        try:
+            fwd_config['zone_target'] = root.attrib['target']
+        except(KeyError):
+            fwd_config['zone_target'] = 'default'
+        # Get IP Sources
+        source_list = []
+        for source in root.findall('source'):
+            #print(source.attrib['address'])
+            source_list.append(source.attrib['address'])
+        if source_list:
+            fwd_config['sources'] = source_list
+        # Get Interfaces
+        try:
+            fwd_config['interface'] = root.find('interface').attrib['name']
+        except(AttributeError):
+            pass
+        # Get Services
+        try:
+            fwd_config['services'] = [ service.attrib['name'] for service in root.findall('service') ]
+        except(AttributeError):
+            fwd_config['services'] = []
+        # Get Rich Rules
+        fwd_config['rich_rules'] = get_rich_rules(root)
+
+        firewalld[fwd_config['zone_name'].lower()] = fwd_config
+    print(json.dumps(firewalld, indent=4))
+    #print(firewalld)
+
+get_data()
+
+

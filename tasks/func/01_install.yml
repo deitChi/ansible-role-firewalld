@@ -1,0 +1,14 @@
+- name: FIREWALLD - Install Package
+  apt:
+    name: firewalld
+    state: present
+    update_cache: yes
+
+- name: FIREWALLD - Install Python Package
+  apt:
+    name:
+      - python
+      - python3
+    state: present
+    update_cache: yes
+  ignore_errors: True

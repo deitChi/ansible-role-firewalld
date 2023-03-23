@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+ <short>MRPE</short>
+ <description>MRPE is used by CheckMK for internal monitoring</description>
+ <port protocol="tcp" port="6556"/>
+</service>

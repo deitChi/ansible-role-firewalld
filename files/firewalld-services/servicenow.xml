@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+ <short>ServiceNow</short>
+ <description>This is used by Service Now to communicate back to Naemon</description>
+ <port protocol="tcp" port="3183"/>
+</service>

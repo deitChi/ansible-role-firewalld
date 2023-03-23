@@ -1,0 +1,16 @@
+---
+- name: FIREWALLD - Generate Rule Lists
+  set_fact:
+    remove_sources: "{{ ansible_facts.ansible_local.firewalld[item.zone]['sources'] | default([]) | difference(item.sources) }}"
+    remove_ports: "{{ ansible_facts.ansible_local.firewalld[item.zone]['ports'] | default([]) | difference(item.ports.rules + common.ports if item.ports.use_common else [] ) }}"
+    remove_services: "{{ ansible_facts.ansible_local.firewalld[item.zone]['services'] | default([]) | difference(item.services.rules + common.services if item.services.use_common else [] ) }}"
+    remove_rich_rules: "{{ ansible_facts.ansible_local.firewalld[item.zone]['rich_rules'] | default([]) | difference(item.rich_rules.rules + common.rich_rules if item.rich_rules.use_common else [] ) }}"
+    add_sources: "{{ item.sources | default([]) }}"
+    add_ports: "{{ common.ports if item.ports.use_common else [] + item.ports.rules }}"
+    add_services: "{{ common.services if item.services.use_common else [] + item.services.rules }}"
+    add_rich_rules: "{{ common.rich_rules if item.rich_rules.use_common else [] + item.rich_rules.rules }}"
+  register: fact_data
+  with_items: "{{ zone_conf }}"
+
+# - debug:
+#     msg: "{{ fact_data }}"

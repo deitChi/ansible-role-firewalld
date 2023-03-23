@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+<short>livestatus</short>
+<description>Livestatus is an API for CheckMK|Naemon</description>
+<port protocol="tcp" port="6557"/>
+</service>

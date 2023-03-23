@@ -1,0 +1,54 @@
+---
+- name: FIREWALLD - Start Service
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: ANSIBLE - Create facts.d dir
+  file:
+    path: /etc/ansible/facts.d
+    state: directory
+
+- name: FIREWALLD - Copy Service Definition & Facts
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    mode: '{{ item.mode }}'
+  with_items:
+    - { src: firewalld-services/, dest: /etc/firewalld/services/, mode: '0644' }
+    - { src: facts.d/, dest: /etc/ansible/facts.d/, mode: '0755' }
+
+- name: FIREWALLD - Re-run setup to use custom facts
+  setup: ~
+
+- name: FIREWALLD - Log Denied Packet
+  lineinfile:
+    path: /etc/firewalld/firewalld.conf
+    regexp: '^LogDenied'
+    line: 'LogDenied=all'
+    state: present
+  when: log_denied
+  
+- name: "FIREWALLD - Zone {{ default_interface_zone }} - Configure Interface"
+  firewalld:
+    interface: '{{ ansible_default_ipv4.interface }}'
+    zone: "{{ default_interface_zone}}"
+    permanent: yes
+    state: enabled
+  notify:
+    - Reload FirewallD
+  when: default_interface_zone != ""
+
+- name: FIREWALLD - Direct - Configure icmp timestamp-reply & timestamp-request
+  template:
+    src: direct.xml.j2
+    dest: /etc/firewalld/direct.xml
+    owner: root
+    group: root
+  notify:
+    - Reload FirewallD
+  when: disable_timestamp_request_reply
+
+- name: FIREWALLD - Default Zone - Set to {{ default_interface_zone }}
+  shell: "firewall-cmd --set-default-zone={{ default_interface_zone }}"

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+ <short>IPERF</short>
+ <description>IPERF is a tool to test data transfer speeds.</description>
+ <port protocol="tcp" port="5001"/>
+</service>

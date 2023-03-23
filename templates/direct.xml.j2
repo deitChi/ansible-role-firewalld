@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<direct>
+  <rule ipv="ipv4" table="filter" chain="INPUT" priority="-5">-p icmp --icmp-type timestamp-request -j DROP</rule>
+  <rule ipv="ipv4" table="filter" chain="OUTPUT" priority="-5">-p icmp --icmp-type timestamp-reply -j DROP</rule>
+</direct>

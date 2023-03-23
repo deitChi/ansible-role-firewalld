@@ -1,0 +1,12 @@
+---
+- name: UFW - Stop & Disable Package
+  systemd:
+    name: ufw
+    state: stopped
+    enabled: no
+  ignore_errors: True
+
+- name: UFW - Remove Package
+  apt:
+    name: ufw
+    state: absent

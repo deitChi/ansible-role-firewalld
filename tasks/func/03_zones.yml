@@ -41,7 +41,7 @@
   when: "{{ item.zone in zone_list }}"
   with_items: "{{ zone_conf }}"
   loop_control:
-    label: "> <Zone Template={{ item.name }}> <Zone={{ item.zone }}> <Target={{ item.target | | default('default') }}>"
+    label: "> <Zone Template={{ item.name }}> <Zone={{ item.zone }}> <Target={{ item.target | default('default') }}>"
 
 - name: "FIREWALLD - Re-run setup to use custom facts"
   setup: ~

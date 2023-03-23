@@ -32,9 +32,18 @@
 
 - name: FIREWALLD - Zone - Create
   firewalld:
+    zone: "{{ item }}"
+    state: present
+    permanent: true
+  notify:
+    - Reload FirewallD
+  with_items: "{{ add_zones }}"
+
+- name: FIREWALLD - Zone - Set Target
+  firewalld:
     zone: "{{ item.zone }}"
     state: present
-    target: "{{ item.target | default(omit) }}"
+    target: "{{ item.target | default('default') }}"
     permanent: true
   notify:
     - Reload FirewallD

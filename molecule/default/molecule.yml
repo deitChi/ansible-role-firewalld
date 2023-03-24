@@ -17,7 +17,7 @@ platforms:
   #   pre_build_image: true
   #   cgroupns_mode: host  ## <-- This is the line I added
   - name: ubuntu-22.04
-    image: jrei/systemd-ubuntu:22.04
+    image: geerlingguy/docker-ubuntu2204-ansible:latest
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     command: "/lib/systemd/systemd"
@@ -27,7 +27,7 @@ platforms:
     groups:
       - access
   - name: ubuntu-20.04
-    image: jrei/systemd-ubuntu:20.04
+    image: geerlingguy/docker-ubuntu2004-ansible:latest
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     command: "/lib/systemd/systemd"
@@ -37,7 +37,7 @@ platforms:
     groups:
       - access
   - name: centos-7
-    image: jrei/systemd-centos:7
+    image: geerlingguy/docker-centos7-ansible:latest
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     command: "/lib/systemd/systemd"

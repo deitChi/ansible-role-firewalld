@@ -1,25 +1,75 @@
-name: Molecule
-
+---
+name: CI
 on:
   push:
     branches:
       - master
   pull_request:
 
+defaults:
+  run:
+    working-directory: 'deitchi.firewalld'
+
 jobs:
-  molecule:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Check out the codebase.
         uses: actions/checkout@v2
         with:
-          path: "${{ github.repository }}"
+          path: 'deitchi.firewalld'
 
-      - name: Molecule
-        uses: gofrolist/molecule-action@v2
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
         with:
-          molecule_command: test
-          molecule_args: -d docker
-          molecule_working_dir: deitChi/ansible-role-firewalld
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: pip3 install yamllint
+
+      - name: Lint code.
+        run: |
+          yamllint .
+
+  molecule:
+    name: Molecule
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - distro: centos7
+            playbook: converge.yml
+            experimental: false
+          - distro: centos8
+            playbook: converge.yml
+            experimental: false
+          - distro: ubuntu2004
+            playbook: converge.yml
+            experimental: false
+          - distro: ubuntu2204
+            playbook: converge.yml
+            experimental: false
+
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          path: 'deitchi.firewalld'
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: pip3 install ansible molecule[docker] docker
+
+      - name: Run Molecule tests.
+        run: molecule test
+        continue-on-error: ${{ matrix.experimental }}
         env:
+          PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+          MOLECULE_PLAYBOOK: ${{ matrix.playbook }}

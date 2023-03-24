@@ -50,5 +50,11 @@
     - Reload FirewallD
   when: disable_timestamp_request_reply
 
+- name: FIREWALLD - Get Default Zone
+  shell: firewall-cmd --get-default-zone
+  register: firewalld_default_zone
+  changed_when: false
+
 - name: FIREWALLD - Default Zone - Set to {{ default_interface_zone }}
   shell: "firewall-cmd --set-default-zone={{ default_interface_zone }}"
+  when: firewalld_default_zone.stdout != default_interface_zone

@@ -40,7 +40,7 @@ jobs:
         include:
           - distro: centos7
             playbook: converge.yml
-            experimental: false
+            experimental: true
             command: "/usr/sbin/init"
           - distro: centos8
             playbook: converge.yml

@@ -4,7 +4,7 @@
   vars:
     skip_prompts: True
     remove_ufw: False
-    zone_conf:
+    profiles:
       - name: public-ssh
         zone: public
         target: DROP

@@ -28,7 +28,7 @@ common:
 In the `common` map you can declare frequently used services - i.e. ssh limit rules, or services that apply to multiple profiles.
 
 ```yaml
-zone_conf:
+profiles:
   - name: public-ssh
     zone: public
     target: DROP
@@ -44,7 +44,7 @@ zone_conf:
       rules: []
 ```
 
-In the `zone_conf` list of maps, you declare your firewall profiles. The use of `use_common` merges any common rules with the same name, to the Zone.
+In the `profiles` list of maps, you declare your firewall profiles. The use of `use_common` merges any common rules with the same name, to the Zone.
 
 Role Variables
 --------------

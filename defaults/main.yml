@@ -18,6 +18,7 @@ zone_conf:
   - name: public-ssh
     zone: public
     target: DROP
+    sources: []
     ports:
       use_common: no
       rules: []

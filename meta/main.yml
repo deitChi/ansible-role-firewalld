@@ -14,8 +14,8 @@ galaxy_info:
     - 8
   - name: Ubuntu
     versions:
-    - 20.04
-    - 22.04
+    - Focal
+    - Jammy
 
   galaxy_tags:
     - networking

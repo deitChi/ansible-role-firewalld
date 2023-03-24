@@ -40,7 +40,7 @@ jobs:
         include:
           - distro: centos7
             playbook: converge.yml
-            experimental: false
+            experimental: true
           - distro: centos8
             playbook: converge.yml
             experimental: false
@@ -73,3 +73,4 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
           MOLECULE_PLAYBOOK: ${{ matrix.playbook }}
+          MOLECULE_DOCKER_COMMAND: ${{ matrix.command }}

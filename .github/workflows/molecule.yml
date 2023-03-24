@@ -73,19 +73,3 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
           MOLECULE_PLAYBOOK: ${{ matrix.playbook }}
-  # molecule:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #       with:
-  #         path: "${{ github.repository }}"
-
-  #     - name: Molecule
-  #       uses: gofrolist/molecule-action@v2
-  #       with:
-  #         molecule_command: test
-  #         molecule_args: -d docker
-  #         molecule_working_dir: deitChi/ansible-role-firewalld
-  #       env:
-  #         ANSIBLE_FORCE_COLOR: '1'

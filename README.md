@@ -1,7 +1,7 @@
 Firewalld
 =========
 
-[![CI](https://github.com/deitChi/ansible-role-firewalld/workflows/CI/badge.svg?event=push)](https://github.com/deitChi/ansible-role-firewalld/actions?query=workflow%3ACI)
+[![CI](https://github.com/deitChi/ansible-role-firewalld/actions/workflows/molecule.yml/badge.svg)](https://github.com/deitChi/ansible-role-firewalld/actions/workflows/molecule.yml)
 
 This Ansible Role is created to allow firewalld to be managed programatically - at scale. The role allows for the users to define firewall profiles, and select them using inventory lists - or apply them directly.
 

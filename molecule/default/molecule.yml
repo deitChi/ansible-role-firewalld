@@ -4,14 +4,6 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: firewalld-latest
-    image: quay.io/firewalld/firewalld:latest
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    pre_build_image: true
-    privileged: true
-    groups:
-      - access
   # - name: rhel8
   #   image: registry.access.redhat.com/ubi8/ubi-init
   #   tmpfs:
@@ -29,49 +21,31 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     command: "/lib/systemd/systemd"
-    pre_build_image: true
+    cgroupns_mode: host
     privileged: true
+    pre_build_image: true
     groups:
       - access
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    #   - /run/lock
-    # capabilities:
-    #   - SYS_ADMIN
-    # cgroupns_mode: host  ## <-- This is the line I added
   - name: ubuntu-20.04
     image: jrei/systemd-ubuntu:20.04
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     command: "/lib/systemd/systemd"
-    pre_build_image: true
+    cgroupns_mode: host
     privileged: true
+    pre_build_image: true
     groups:
       - access
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    #   - /run/lock
-    # capabilities:
-    #   - SYS_ADMIN
-    # cgroupns_mode: host  ## <-- This is the line I added
   - name: centos-7
     image: jrei/systemd-centos:7
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     command: "/lib/systemd/systemd"
-    pre_build_image: true
+    cgroupns_mode: host
     privileged: true
+    pre_build_image: true
     groups:
       - access
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    #   - /run/lock
-    # capabilities:
-    #   - SYS_ADMIN
-    # cgroupns_mode: host  ## <-- This is the line I added
 provisioner:
   name: ansible
   inventory:

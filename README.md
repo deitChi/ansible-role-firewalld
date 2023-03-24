@@ -93,14 +93,140 @@ None.
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Declare your Firewall Profiles, and call the role.
 
 ```yaml
 - hosts: servers
   gather_facts: true
   become: true
+  vars:
+    profiles:
+      - name: public-http
+        zone: public
+        target: default
+        sources: []
+        ports:
+          use_common: no
+          rules: []
+        services:
+          use_common: no
+          rules:
+            - http
+            - https
+        rich_rules:
+          use_common: no
+          rules: []
+
+      - name: public-ssh
+        zone: public
+        target: DROP
+        sources: []
+        ports:
+          use_common: no
+          rules: []
+        services:
+          use_common: no
+          rules:
+            - ssh
+        rich_rules:
+          use_common: no
+          rules: []
+
+      - name: patching-ssh
+        zone: patching
+        target: DROP
+        sources:
+          - 192.168.10.0/24
+          - 192.168.9.5
+        ports:
+          use_common: no
+          rules: []
+        services:
+          use_common: no
+          rules: []
+        rich_rules:
+          use_common: no
+          rules:
+            - 'rule protocol value="icmp" accept'
+            - 'rule family="ipv4" service name="ssh" accept limit value="1/s"'
+
+      - name: mysql
+        zone: mysql
+        target: Reject
+        sources:
+          - 172.10.30.5/32
+          - 172.10.30.6/32
+        ports:
+          use_common: no
+          rules:
+            - 3306/tcp
+        services:
+          use_common: no
+          rules: []
+        rich_rules:
+          use_common: yes
+          rules: []
+
   roles:
-    - ../roles/firewalld
+    - deitchi.firewalld
+```
+
+Example Inventory
+-----------------
+
+Ensure your hosts have a profile set in the inventory
+
+```ini
+[servers:vars]
+fwd_zone=['patching-ssh']
+[servers:children]
+mysql
+webserver
+
+[mysql:vars]
+fwd_zone=['patching-ssh','mysql']
+[mysql]
+dbserver1
+
+[webserver:vars]
+fwd_zone=['patching-ssh','public-http']
+[webserver]
+webserver1
+
+[ansible]
+ansible-server1 ansible_host=192.168.9.5
+ansible-server2 ansible_host=192.168.9.6
+```
+
+Going Further
+-------------
+
+Using this model, it is also possible to create a dynamic Firewall Profile based on inventory hosts.
+
+Using this [script](https://gist.github.com/deitChi/86ac8ad53379ef977cd97e4bdf4aa134), we can select an inventory group, and add the hosts to a sources list.
+
+```yaml
+profiles:
+  - name: patching-ssh
+    zone: patching
+    target: DROP
+    # Get ansible inventory var from python script
+    sources: "{{ lookup('pipe','../lookup_inventory.py -g ansible -ip') }}" 
+    ...
+```
+
+In this example, we're using the same Profile as before, but this time using a script to return a list of IP addresses from the `inventory` from the example earlier. `-g ansible` specifies the Inventory Group.
+
+The result is the equivalent of:
+```yaml
+profiles:
+  - name: patching-ssh
+    zone: patching
+    target: DROP
+    sources:
+      - 192.168.9.5
+      - 192.168.9.6
+    ...
 ```
 
 License

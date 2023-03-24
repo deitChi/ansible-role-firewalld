@@ -13,7 +13,7 @@ name: Release
 
 defaults:
   run:
-    working-directory: 'geerlingguy.certbot'
+    working-directory: 'deitchi.firewalld'
 
 jobs:
 

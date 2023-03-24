@@ -20,7 +20,7 @@ platforms:
     image: geerlingguy/docker-ubuntu2204-ansible:latest
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    command: "/lib/systemd/systemd"
+    #command: "/lib/systemd/systemd"
     cgroupns_mode: host
     privileged: true
     pre_build_image: true
@@ -30,7 +30,7 @@ platforms:
     image: geerlingguy/docker-ubuntu2004-ansible:latest
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    command: "/lib/systemd/systemd"
+    #command: "/lib/systemd/systemd"
     cgroupns_mode: host
     privileged: true
     pre_build_image: true
@@ -40,7 +40,7 @@ platforms:
     image: geerlingguy/docker-centos7-ansible:latest
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    command: "/lib/systemd/systemd"
+    #command: "/lib/systemd/systemd"
     cgroupns_mode: host
     privileged: true
     pre_build_image: true

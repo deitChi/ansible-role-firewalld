@@ -15,7 +15,7 @@
 
 - name: FIREWALLD - Generate CSV Rule List
   set_fact:
-    csv_zone_list: "{% for zone in zone_conf %}\
+    csv_zone_list: "{% for zone in profiles %}\
         {% if zone.name in lookup('ansible.builtin.vars', inventory_var) %}\
           {{ zone.zone }}{% if not loop.last %},{% endif %}\
         {% endif %}\

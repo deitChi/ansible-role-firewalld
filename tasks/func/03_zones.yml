@@ -48,7 +48,7 @@
   notify:
     - Reload FirewallD
   when: item.name in lookup('ansible.builtin.vars', inventory_var)
-  with_items: "{{ zone_conf }}"
+  with_items: "{{ profiles }}"
   loop_control:
     label: "> <Zone Template={{ item.name }}> <Zone={{ item.zone }}> <Target={{ item.target | default('default') }}>"
 

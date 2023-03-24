@@ -14,7 +14,7 @@ common:
     - 'rule family="ipv4" service name="ssh" accept limit value="1/s"'
   services: []
   ports: []
-zone_conf:
+profiles:
   - name: public-ssh
     zone: public
     target: DROP

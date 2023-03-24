@@ -25,6 +25,8 @@ jobs:
 
       # - name: Install Galaxy dependencies.
       #   run: ansible-galaxy collection install community.docker
+      - name: Check Dir
+        run: "pwd && ls -la"
 
       - name: Run molecule
         run: "molecule test"

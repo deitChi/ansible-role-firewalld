@@ -1,0 +1,50 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Install Container Specific RedHat
+      yum:
+        name:
+          - firewalld
+          - iproute
+          - python3
+      when: ansible_os_family == 'RedHat'
+
+    - name: Install ip
+      apt:
+        name: iproute2
+      when: ansible_os_family == 'Debian'
+
+    - name: "Include firewalld"
+      include_role:
+        name: "firewalld"
+      vars:
+        skip_prompts: True
+        remove_ufw: False
+        zone_conf:
+          - name: public-ssh
+            zone: public
+            target: DROP
+            ports:
+              use_common: no
+              rules: []
+            services:
+              use_common: no
+              rules: []
+            rich_rules:
+              use_common: yes
+              rules: []
+          - name: public-http
+            zone: public
+            target: DROP
+            ports:
+              use_common: no
+              rules: []
+            services:
+              use_common: no
+              rules:
+                - http
+                - https
+            rich_rules:
+              use_common: no
+              rules: []

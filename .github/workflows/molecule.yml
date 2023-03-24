@@ -15,9 +15,6 @@ jobs:
         with:
           path: "${{ github.repository }}"
 
-      - name: Check Dir
-        run: "cd deitChi/ansible-role-firewalld && pwd && ls -la"
-
       - name: Molecule
         uses: gofrolist/molecule-action@v2
         with:
@@ -26,25 +23,3 @@ jobs:
           molecule_working_dir: deitChi/ansible-role-firewalld
         env:
           ANSIBLE_FORCE_COLOR: '1'
-      # - name: Set up Python
-      #   uses: actions/setup-python@v2
-      #   with:
-      #     python-version: '3.x'
-
-      # - name: Install dependencies.
-      #   run: pip3 install yamllint ansible-lint ansible "molecule[lint,docker]"
-
-      # - name: Install Galaxy dependencies.
-      #   run: ansible-galaxy collection install community.docker
-      # - name: Check Dir
-      #   run: "cd deitChi/ansible-role-firewalld && pwd && ls -la"
-
-      # - name: Run molecule
-      #   run: "molecule test"
-      # - name: Molecule
-      #   uses: gofrolist/molecule-action@v2
-      #   with:
-      #     molecule_command: test
-      #     molecule_args: -d docker
-      #   env:
-      #     ANSIBLE_FORCE_COLOR: '1'

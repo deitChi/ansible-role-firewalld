@@ -56,22 +56,6 @@ platforms:
     # capabilities:
     #   - SYS_ADMIN
     # cgroupns_mode: host  ## <-- This is the line I added
-  - name: centos-8
-    image: jrei/systemd-centos:8
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    command: "/lib/systemd/systemd"
-    pre_build_image: true
-    privileged: true
-    groups:
-      - access
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    #   - /run/lock
-    # capabilities:
-    #   - SYS_ADMIN
-    # cgroupns_mode: host  ## <-- This is the line I added
   - name: centos-7
     image: jrei/systemd-centos:7
     volumes:

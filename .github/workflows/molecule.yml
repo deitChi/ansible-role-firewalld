@@ -41,19 +41,15 @@ jobs:
           - distro: centos7
             playbook: converge.yml
             experimental: true
-            command: "/usr/sbin/init"
           - distro: centos8
             playbook: converge.yml
             experimental: false
-            command: ""
           - distro: ubuntu2004
             playbook: converge.yml
             experimental: false
-            command: ""
           - distro: ubuntu2204
             playbook: converge.yml
             experimental: false
-            command: ""
 
     steps:
       - name: Check out the codebase.

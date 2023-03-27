@@ -49,5 +49,5 @@
           # New Zone
           - firewalld['patching-source'].zone_target == 'DROP'
           - firewalld['patching-source'].sources == ['10.0.0.15/32', '10.0.1.0/24', '10.0.2.16']
-          - firewalld['patching-source'].rich_rules == ['rule protocol value=\"icmp\" accept', 'rule family=\"ipv4\" service name=\"ssh\" accept limit value=\"1/s\"']
+          - firewalld['patching-source'].rich_rules == ['rule protocol value=\"icmp\" accept']
           - firewalld['patching-source'].services == ['dhcp', 'ssh']

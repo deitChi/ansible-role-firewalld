@@ -24,11 +24,25 @@ These variables are intended to be stored in the playbook, as they ultimately de
 ```yaml
 common:
   rich_rules:
-    - 'rule protocol value="icmp" accept'
-    - 'rule family="ipv4" service name="ssh" accept limit value="1/s"'
+    limited_ssh:
+      - 'rule family="ipv4" service name="ssh" accept limit value="1/s"'
+    limited_ssh_notice_log:
+      - 'rule family="ipv4" service name="ssh" log prefix="SSH Access" level="notice" accept limit value="1/s"'
+    icmp:
+      - 'rule protocol value="icmp" accept'
   services:
-    - dhcp
-  ports: []
+    web:
+      - http
+      - https
+    tls_only:
+      - https
+    ssh:
+      - ssh
+  ports:
+    checkmk_agent:
+      - 6556/tcp
+    checkmk_livestatus:
+      - 6557/tcp
 ```
 
 In the `common` map you can declare frequently used services - i.e. ssh limit rules, or services that apply to multiple profiles.
@@ -40,17 +54,15 @@ profiles:
     target: DROP
     sources: []
     ports:
-      use_common: no
       rules: []
     services:
-      use_common: no
       rules: []
     rich_rules:
-      use_common: yes
+      common_profiles: [limited_ssh, icmp]
       rules: []
 ```
 
-In the `profiles` list of maps, you declare your firewall profiles. The use of `use_common` merges any common rules with the same name, to the Zone.
+In the `profiles` list of maps, you declare your firewall profiles. The use of `use_common` merges any common profile rules with the same name, to the Zone.
 
 Role Variables
 --------------
@@ -126,15 +138,12 @@ Declare your Firewall Profiles, and call the role.
         target: default
         sources: []
         ports:
-          use_common: no
           rules: []
         services:
-          use_common: no
           rules:
             - http
             - https
         rich_rules:
-          use_common: no
           rules: []
 
       - name: public-ssh
@@ -142,14 +151,11 @@ Declare your Firewall Profiles, and call the role.
         target: DROP
         sources: []
         ports:
-          use_common: no
           rules: []
         services:
-          use_common: no
           rules:
             - ssh
         rich_rules:
-          use_common: no
           rules: []
 
       - name: patching-ssh
@@ -159,13 +165,10 @@ Declare your Firewall Profiles, and call the role.
           - 192.168.10.0/24
           - 192.168.9.5
         ports:
-          use_common: no
           rules: []
         services:
-          use_common: no
           rules: []
         rich_rules:
-          use_common: no
           rules:
             - 'rule protocol value="icmp" accept'
             - 'rule family="ipv4" service name="ssh" accept limit value="1/s"'
@@ -177,14 +180,12 @@ Declare your Firewall Profiles, and call the role.
           - 172.10.30.5/32
           - 172.10.30.6/32
         ports:
-          use_common: no
           rules:
             - 3306/tcp
         services:
-          use_common: no
           rules: []
         rich_rules:
-          use_common: yes
+          common_profiles: [limited_ssh, icmp]
           rules: []
 
   roles:

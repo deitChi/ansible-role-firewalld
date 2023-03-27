@@ -20,7 +20,7 @@
             - https
         rich_rules:
           rules: []
-          common_profiles: [limited_ssh, icmp]
+          common_profiles: [icmp, limited_ssh]
       - name: Ansible Patching
         zone: patching-source
         sources:

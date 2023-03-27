@@ -9,7 +9,7 @@
     service: "{{ item.1 if topic == 'services' else omit }}"
     rich_rule: "{{ item.1 if topic == 'rich_rules' else omit }}"
   with_subelements:
-    - "{{ fact_data_new.results }}"
+    - "{{ fact_data.results }}"
     - "ansible_facts.all.{{ function }}.{{ topic }}"
   loop_control:
     label: "> <Zone Template={{ item.0.item.name }}> <Zone={{ item.0.item.zone }}> <{{ topic | capitalize }}={{ item.1 }}>"

@@ -30,6 +30,15 @@
     group: root
   register: firewalld_config_file
 
+- name: "FIREWALLD - Zone {{ cfg_DefaultZone }} - Configure Interface"
+  firewalld:
+    interface: '{{ ansible_default_ipv4.interface }}'
+    zone: "{{ cfg_DefaultZone }}"
+    permanent: yes
+    state: enabled
+  notify:
+    - Reload FirewallD
+
 - name: FIREWALLD - Direct - Configure icmp timestamp-reply & timestamp-request
   template:
     src: direct.xml.j2

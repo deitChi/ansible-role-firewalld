@@ -22,23 +22,22 @@
 - name: FIREWALLD - Re-run setup to use custom facts
   setup: ~
 
-- name: FIREWALLD - Log Denied Packet
-  lineinfile:
-    path: /etc/firewalld/firewalld.conf
-    regexp: '^LogDenied'
-    line: 'LogDenied=all'
-    state: present
-  when: log_denied
-  
-- name: "FIREWALLD - Zone {{ default_interface_zone }} - Configure Interface"
+- name: FIREWALLD - Template Config File
+  template:
+    src: firewalld.conf.j2
+    dest: /etc/firewalld/firewalld.conf
+    owner: root
+    group: root
+  register: firewalld_config_file
+
+- name: "FIREWALLD - Zone {{ cfg_DefaultZone }} - Configure Interface"
   firewalld:
     interface: '{{ ansible_default_ipv4.interface }}'
-    zone: "{{ default_interface_zone}}"
+    zone: "{{ cfg_DefaultZone }}"
     permanent: yes
     state: enabled
   notify:
     - Reload FirewallD
-  when: default_interface_zone != ""
 
 - name: FIREWALLD - Direct - Configure icmp timestamp-reply & timestamp-request
   template:
@@ -46,15 +45,11 @@
     dest: /etc/firewalld/direct.xml
     owner: root
     group: root
-  notify:
-    - Reload FirewallD
+  register: firewalld_direct_file
   when: disable_timestamp_request_reply
 
-- name: FIREWALLD - Get Default Zone
-  shell: firewall-cmd --get-default-zone
-  register: firewalld_default_zone
-  changed_when: false
-
-- name: FIREWALLD - Default Zone - Set to {{ default_interface_zone }}
-  shell: "firewall-cmd --set-default-zone={{ default_interface_zone }}"
-  when: firewalld_default_zone.stdout != default_interface_zone
+- name: FIREWALLD - Service - Restart
+  systemd:
+    name: firewalld
+    state: restarted
+  when: firewalld_config_file.changed or firewalld_direct_file.changed

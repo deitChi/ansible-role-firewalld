@@ -3,8 +3,51 @@
 
 - name: Verify
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
-  - name: Example assertion
-    ansible.builtin.assert:
-      that: true
+    - name: FIREWALLD - Check Installed
+      package:
+        name: "firewalld"
+        state: installed
+      check_mode: yes
+      register: pkg_status
+  
+    - name: FIREWALLD - Test Installed
+      assert:
+        that:
+          - not pkg_status.changed
+
+    - name: FIREWALLD - Check Service
+      systemd:
+        name: firewalld
+        state: started
+        enabled: yes
+      check_mode: yes
+      register: service_status
+
+    - name: FIREWALLD - Test Service
+      assert:
+        that:
+          - not service_status.changed
+
+    # - debug:
+    #     msg: "{{ ansible_facts.ansible_local.firewalld }}"
+
+    - name: Shortened Fact Var
+      set_fact:
+        firewalld: "{{ ansible_facts.ansible_local.firewalld }}"
+
+    - name: FIREWALLD - Test Rules
+      assert:
+        that:
+          # Existing Zone
+          - firewalld.public.interface == "eth0"
+          - firewalld.public.zone_target == 'DROP'
+          - firewalld.public.rich_rules == ['rule protocol value=\"icmp\" accept', 'rule family=\"ipv4\" service name=\"ssh\" accept limit value=\"1/s\"']
+          - firewalld.public.services == ['dhcp', 'http', 'https']
+          - firewalld.public.ports == ['53/udp', '123/udp', '1433/tcp']
+          # New Zone
+          - firewalld['patching-source'].zone_target == 'DROP'
+          - firewalld['patching-source'].sources == ['10.0.0.15/32', '10.0.1.0/24', '10.0.2.16']
+          - firewalld['patching-source'].rich_rules == ['rule protocol value=\"icmp\" accept', 'rule family=\"ipv4\" service name=\"ssh\" accept limit value=\"1/s\"']
+          - firewalld['patching-source'].services == ['dhcp', 'ssh']

@@ -8,7 +8,7 @@
     - name: FIREWALLD - Check Installed
       package:
         name: "firewalld"
-        state: installed
+        state: present
       check_mode: yes
       register: pkg_status
   

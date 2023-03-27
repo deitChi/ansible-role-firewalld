@@ -3,7 +3,13 @@ Firewalld
 
 [![CI](https://github.com/deitChi/ansible-role-firewalld/actions/workflows/molecule.yml/badge.svg)](https://github.com/deitChi/ansible-role-firewalld/actions/workflows/molecule.yml)
 
-This Ansible Role is created to allow firewalld to be managed programatically - at scale. The role allows for the users to define firewall profiles, and select them using inventory lists - or apply them directly.
+This Role has been created to manage `firewalld` both locally and at scale.
+Features include:
+- Profile (Template) definitions
+- Profile State - Rules not matching profile are removed.
+- Common Profiles - Allows re-use of rule sets.
+- Check & Diff Mode compatible
+- Profile selection using `Inventory`, `Playbook` or `Role`
 
 Requirements
 ------------
@@ -51,36 +57,50 @@ Role Variables
 
 Available variables are listed below, along with default values (see defaults/main.yml):
 
-    remove_ufw: True
+```yaml
+remove_ufw: True
+```
 
 Controls if UFW (uncomplicated firewall - Ubuntu Package) should be removed as part of the installation.
 
-    log_denied: True
+```yaml
+log_denied: True
+```
 
 `firewalld.conf` - log denied & dropped packets (Can be disk intensive)
 
-    disable_timestamp_request_reply: True
+```yaml
+disable_timestamp_request_reply: True
+```
 
 Add a direct rule, to prevent timestamp reply requests.
 
-    default_interface_zone: public
+```yaml
+default_interface_zone: public
+```
 
-Default Zone (Zone that your rules get added to if you do not specify `--zone zonename`) 
+Default Zone (`iptables` CHAIN) Any rules added manually without declaring `--zone` land here
 
 `Please note`: In RHEL8 the default behaviour is the default nic & default zone are linked, whereas they could be separated in the previous RHEL versions. This role ties the two.
 
-    inventory_var: fwd_zone
+```yaml
+inventory_var: fwd_zone
+```
 
 The variable specified in your inventory for the template `name`
 
-    skip_prompts: False
+```yaml
+skip_prompts: False
+```
 
 During the playbook, there are various AYS (Are you sure?) Stages that are there to prevent unintentional firewall modifications. Disabled for CI/CD
 
 Host | Group Vars
 -----------------
 
-    fwd_zone: ['public-ssh']
+```yaml
+fwd_zone: ['public-ssh']
+```
 
 This is the same value that you set with `inventory_var`, but declared in the Inventory file. Essentially selecting which of the templates you declared that you wish to add to your host.
 

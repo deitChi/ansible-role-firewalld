@@ -78,6 +78,11 @@ def get_data():
             fwd_config['services'] = [ service.attrib['name'] for service in root.findall('service') ]
         except(AttributeError):
             fwd_config['services'] = []
+        # Get Ports
+        try:
+            fwd_config['ports'] = [ f"{service.attrib['port']}/{service.attrib['protocol']}" for service in root.findall('port') ]
+        except(AttributeError):
+            fwd_config['ports'] = []
         # Get Rich Rules
         fwd_config['rich_rules'] = get_rich_rules(root)
 

@@ -13,17 +13,15 @@
 - include: func/02_configure.yml
   tags: firewalld
 
-- name: FIREWALLD - Generate CSV Rule List
-  set_fact:
-    csv_zone_list: "{% for zone in profiles %}\
-        {% if zone.name in lookup('ansible.builtin.vars', inventory_var) %}\
-          {{ zone.zone }}{% if not loop.last %},{% endif %}\
-        {% endif %}\
-      {% endfor %}"
-
 - include: func/03_zones.yml
   vars:
-    zone_list: "{{ csv_zone_list.split(',') }}"
+    zone_list: "{% set z_list = [] %}\
+                {% for zone in profiles %}\
+                  {% if zone.name in lookup('ansible.builtin.vars', inventory_var) %}\
+                    {{ z_list.append(zone.zone) }}\
+                  {% endif %}\
+                {% endfor %}\
+                {{ z_list }}"
   tags: firewalld
 
 - include: func/04_facts.yml

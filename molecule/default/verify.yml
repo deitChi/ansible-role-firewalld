@@ -30,6 +30,14 @@
         that:
           - not service_status.changed
 
+    - name: FIREWALLD - Get Default Zone
+      shell: firewall-cmd --get-default-zone
+      register: firewalld_default_zone
+
+    - name: FIREWALLD - Test Default Zone
+      assert:
+        that: firewalld_default_zone == cfg_DefaultZone
+
     # - debug:
     #     msg: "{{ ansible_facts.ansible_local.firewalld }}"
 

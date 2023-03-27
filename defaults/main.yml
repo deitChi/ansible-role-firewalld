@@ -1,9 +1,22 @@
 ---
 remove_ufw: True
-log_denied: True
+#log_denied: True
 disable_timestamp_request_reply: True
-default_interface_zone: public
+#default_interface_zone: public
 inventory_var: fwd_zone
+
+
+# Firewalld Config File Settings | Defaults
+cfg_DefaultZone: public
+cfg_CleanupOnExit: yes
+cfg_Lockdown: no
+cfg_IPv6_rpfilter: yes
+cfg_IndividualCalls: no
+cfg_LogDenied: all # default: off
+cfg_FirewallBackend: iptables
+cfg_FlushAllOnReload: yes
+cfg_RFC3964_IPv4: yes
+cfg_AllowZoneDrifting: no
 
 skip_prompts: False
 debug_output: False

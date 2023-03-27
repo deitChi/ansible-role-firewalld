@@ -8,26 +8,46 @@ inventory_var: fwd_zone
 skip_prompts: False
 debug_output: False
 
+dynamic_common_types:
+  - ports
+  - services
+  - rich_rules
+
 common:
   rich_rules:
-    - 'rule protocol value="icmp" accept'
-    - 'rule family="ipv4" service name="ssh" accept limit value="1/s"'
-  services: []
-  ports: []
+    limited_ssh:
+      - 'rule family="ipv4" service name="ssh" accept limit value="1/s"'
+    limited_ssh_notice_log:
+      - 'rule family="ipv4" service name="ssh" log prefix="SSH Access" level="notice" accept limit value="1/s"'
+    icmp:
+      - 'rule protocol value="icmp" accept'
+  services:
+    web:
+      - http
+      - https
+    tls_only:
+      - https
+    ssh:
+      - ssh
+  ports:
+    checkmk_agent:
+      - 6556/tcp
+    checkmk_livestatus:
+      - 6557/tcp
 profiles:
   - name: public-ssh
     zone: public
     target: DROP
     sources: []
     ports:
-      use_common: no
       rules: []
+      common_profiles: []
     services:
-      use_common: no
       rules: []
+      common_profiles: []
     rich_rules:
-      use_common: yes
       rules: []
+      common_profiles: [limited_ssh, icmp]
 default_zones:
   - block
   - dmz

@@ -9,20 +9,18 @@
         zone: public
         target: DROP
         ports:
-          use_common: no
           rules:
             - 53/udp
             - 123/udp
             - 1433/tcp
         services:
-          use_common: no
           rules:
             - dhcp
             - http
             - https
         rich_rules:
-          use_common: yes
           rules: []
+          common_profiles: [limited_ssh, icmp]
       - name: Ansible Patching
         zone: patching-source
         sources:
@@ -31,16 +29,14 @@
           - 10.0.2.16
         target: DROP
         ports:
-          use_common: no
           rules: []
         services:
-          use_common: no
           rules:
             - dhcp
             - ssh
         rich_rules:
-          use_common: yes
           rules: []
+          common_profiles: [icmp]
   pre_tasks:
     - name: Install Container Specific RedHat
       yum:

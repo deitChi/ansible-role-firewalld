@@ -13,15 +13,13 @@ platforms:
     privileged: true
     pre_build_image: true
     groups:
-      - access
+      - test
 provisioner:
   name: ansible
   inventory:
     group_vars:
-      access:
-        fwd_zone: ['public-ssh']
-      web:
-        fwd_zone: ['public-http']
+      test:
+        fwd_zone: ['public-test', 'Ansible Patching']
 
 verifier:
   name: ansible

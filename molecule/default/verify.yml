@@ -36,7 +36,7 @@
 
     - name: FIREWALLD - Test Default Zone
       assert:
-        that: firewalld_default_zone == cfg_DefaultZone
+        that: firewalld_default_zone.stdout == 'public'
 
     # - debug:
     #     msg: "{{ ansible_facts.ansible_local.firewalld }}"
